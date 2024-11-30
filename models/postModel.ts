@@ -20,7 +20,7 @@ const postSchema = new mongoose.Schema(
             {
                 type: mongoose.Schema.Types.ObjectId, // Reference to the User model
                 ref: "User",
-                default: [],
+               
             },
 
         ],

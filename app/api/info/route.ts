@@ -5,15 +5,18 @@ export const GET = async (req: Request) => {
     await connectDB();
 
     try {
-        // Fetch all posts and populate their 'author' field in a single query
-        const posts = await Post.find().populate("author");
+       
+        const posts = await Post.find().populate("author").populate({
+            path: "comments.user",  
+            select: "username email name"  
+        });;
         
 
         if (!posts || posts.length === 0) {
             return new Response(JSON.stringify({ error: 'No posts found' }), { status: 404 });
         }
 
-        // Return the posts along with their populated author data
+        
         return new Response(JSON.stringify({
             posts: posts.map(post => ({
                 id: post._id,
@@ -24,7 +27,8 @@ export const GET = async (req: Request) => {
                     email: post.author.email,
                     name: post.author.name,
                 } : null,
-                number: post.likes,
+                likes: post.likes,
+                comments: post.comments,
                
             }))
         }), { status: 200 });
